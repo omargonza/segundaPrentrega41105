@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
-
+import productRouter from './routes/product.router.js';
 import * as CONSTANTS from "./constants.js";
 
 dotenv.config();
@@ -17,6 +17,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/products",productRouter);
 
 
 
@@ -40,5 +41,4 @@ mongoose.connect(
     }
   }
   );
-  
   

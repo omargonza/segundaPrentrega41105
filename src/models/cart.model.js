@@ -7,3 +7,4 @@ const userSchema = new mongoose.Schema({
 });
 
 export const cartModel = mongoose.model(useCollection, userSchema);
+export default cartModel;
