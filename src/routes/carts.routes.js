@@ -1,14 +1,34 @@
 import { Router } from "express";
 import { v4 } from "uuid";
 import FileManager from "../data/clases/DBManager.js";
-import path from "path";
+import cartModel from "../models/cart.model.js";
+
+
 
 const cartRouter = Router();
-const cartFileManager = new FileManager.CartFileManager();
+
 
 cartRouter.get("/", async (req, res) => {
   try {
-    const cart = await cartFileManager.read();
+    const cart = await cartModel.getCart();
+    res.send(cart);
+    } catch (err) {
+      res.status(500).send(err.message);
+      }
+      });
+      
+cartRouter.post("/", async (req, res) => {
+  try {
+    const response = await cartModel.createCart([]);
+    res.send(response);
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  });
+
+cartRouter.get("/", async (req, res) => {
+  try {
+    const cart = await cartModel.read();
     res.send(cart);
   } catch (err) {
     res.status(500).send(err.message);
@@ -17,7 +37,7 @@ cartRouter.get("/", async (req, res) => {
 
 cartRouter.post("/", async (req, res) => {
   try {
-    const response = await cartFileManager.create([]);
+    const response = await cartModel.create([]);
     console.log(response);
     res.send(response);
   } catch (err) {
@@ -25,25 +45,28 @@ cartRouter.post("/", async (req, res) => {
   }
 });
 
-cartRouter.put("/:pid", async (req, res) => {
+cartRouter.put("/:cid/products/:pid", async (req, res) => {
+  const {cid} = req.params;
   const { pid } = req.params;
-  const newProduct = req.body;
+  const {quantitfy} = req.body;
 
   try {
-    const response = await cartFileManager.update(pid, newProduct);
+    const response = await cartModel.addProductTocart(cid,pid,quantitfy);
     res.send(response);
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
 
-cartRouter.delete("/:pid", async (req, res) => {
+cartRouter.delete("/:cid/products/:pid", async (req, res) => {
   const { pid } = req.params;
+  const {cid} = req.params;
 
   try {
-    const response = await cartFileManager.delete(pid);
+    const response = await cartModel.removeProductFromCart(pid, cid);
     res.send({
-      message: "Producto eliminado",
+      
+      message: "Producto eliminado exitosamente",
       id: pid,
     });
   } catch (err) {

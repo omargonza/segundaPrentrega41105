@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import productRouter from './routes/product.router.js';
 import * as CONSTANTS from "./constants.js";
+import cartRouter from './routes/carts.routes.js';
 
 dotenv.config();
 const PORT = process.env.PORT || 8081;
@@ -18,6 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/products",productRouter);
+app.use("cart",cartRouters);
 
 
 
